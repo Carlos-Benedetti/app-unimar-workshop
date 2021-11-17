@@ -2,8 +2,21 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { Coordinate } from 'src/app/util/Coordinates';
+const bboxTopRight: Coordinate = {
+  latitude: -23.5273,
+  longitude: -46.833881
+};
+
+const bboxBottomLeft: Coordinate = {
+  latitude: -23.537519,
+  longitude: -46.840019
+};
+
 export const environment = {
-  production: false
+  production: false,
+  topRight: bboxTopRight,
+  bottomLeft: bboxBottomLeft
 };
 
 /*
