@@ -8,8 +8,5 @@ import { Component } from '@angular/core';
 export class HomePage {
 
   constructor() {}
-  lp(){
-    alert('long press');
-  }
 
 }
