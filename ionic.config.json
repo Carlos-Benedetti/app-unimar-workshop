@@ -1,5 +1,7 @@
 {
   "name": "app-unimar-workshop",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
