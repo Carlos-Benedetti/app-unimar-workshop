@@ -3,11 +3,19 @@
     <ion-title>
       Home
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/config']">
+        <ion-icon name="cog"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div id="container">
-   <p>Nada Por aqui</p>
+    <p>Dentro do quarto: <b>{{inBBox?'sim':'não'}}</b></p>
+    <p>lat: {{latitude}} | lng {{longitude}}</p>
+    <div class="mapDiv" id="homeMapDiv">
+    </div>
   </div>
 </ion-content>

@@ -1,44 +1,90 @@
-import { Component } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Geolocation, Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
 import { inRoom } from '../util/inBoundingBox';
+import { DivIcon, Icon, LatLngBounds, Map, Marker, Rectangle, TileLayer } from 'leaflet';
+import { environment } from 'src/environments/environment';
+import { BoundServiceService } from '../services/bound-service.service';
+import { UserPositionService } from '../services/user-position.service';
+import { Coordinate } from '../util/Coordinates';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  public inBBox = false;
+  public latitude: number;
+  public longitude: number;
+  map: Map;
+  bottonLeftMarker: Marker<any>;
+  topRightMarker: Marker<any>;
+  meMarker: Marker<any>;
+  rectangle: Rectangle<any>;
 
-  constructor(private geolocation: Geolocation) {
-    // ouvir por mudanças de posição
-    const watch = this.geolocation.watchPosition({enableHighAccuracy:true});
-    watch.subscribe((data) => {
+  get haveCoodenates(): boolean {
+    return typeof this.latitude === 'number' && typeof this.longitude === 'number';
+  }
+  constructor(private userPositionService: UserPositionService, private boundServiceService: BoundServiceService) {
+  };
 
-      //se a posição for valida, verifica se ela esta dentro do perimetro
-      if (this.isValidPosition(data)) {
-        this.checkPosition(data);
-      }
+  ionViewDidEnter(): void {
+    this.leafletMap();
+    this.userPositionService.watchPosition.subscribe(position => {
+      this.checkPosition(position);
     });
   };
 
-  checkPosition(position: Geoposition) {
+
+  checkPosition(position: Coordinate) {
     //verifica se esta no perimetro
-    const inTheRoom = inRoom(
-      position.coords.latitude,
-      position.coords.longitude
-    );
+    this.latitude = position.latitude;
+    this.longitude = position.longitude;
+
+    this.updateMarker();
+    const inTheRoom = this.rectangle.getBounds().contains(this.meMarker.getLatLng());
 
     //se estiver avise
     if (inTheRoom) {
-      console.log('estou DENTRO do perimetro');
-    }else{
-      console.log('estou FORA do perimetro');
+      this.inBBox = true;
+    } else {
+      this.inBBox = false;
     }
   }
 
-  //verifica se o dado retornada é um posição
-  isValidPosition(data: Geoposition | PositionError): data is Geoposition {
-    return 'coords' in data;
+  leafletMap() {
+    if (!this.map) {
+      this.map = new Map('homeMapDiv').setView([0, 0], 13);
+      new TileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: 'Carlos Bene',
+        maxNativeZoom: 19,
+        maxZoom: 30
+      }).addTo(this.map);
+    }
+
+    this.updateRectangle();
+    this.boundServiceService.boundsUpdate.subscribe(() => this.updateRectangle());
   }
 
+  updateRectangle() {
+    if (this.rectangle) {
+      this.rectangle.setBounds(this.boundServiceService.getBounds());
+    } else {
+      this.rectangle = this.boundServiceService.getRectangle().addTo(this.map);
+    }
+    this.map.fitBounds(this.rectangle.getBounds());
+  }
+
+  updateMarker() {
+    if (this.meMarker) {
+      this.meMarker.setLatLng([this.latitude, this.longitude]);
+    } else {
+      this.meMarker = new Marker([this.latitude, this.longitude], {
+        icon: new Icon({
+          iconUrl: 'assets/icon/favicon.png',
+          iconSize: [64, 64]
+        })
+      }).addTo(this.map);
+    }
+  }
 
 }

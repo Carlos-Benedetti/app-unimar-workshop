@@ -10,7 +10,11 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },  {
+    path: 'config',
+    loadChildren: () => import('./pages/config/config.module').then( m => m.ConfigPageModule)
   },
+
 ];
 
 @NgModule({

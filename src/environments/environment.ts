@@ -4,19 +4,19 @@
 
 import { Coordinate } from 'src/app/util/Coordinates';
 const bboxTopRight: Coordinate = {
-  latitude: -23.5273,
-  longitude: -46.833881
+  latitude: -21.927614,
+  longitude: -50.520961
 };
 
 const bboxBottomLeft: Coordinate = {
-  latitude: -23.537519,
-  longitude: -46.840019
+  latitude: -21.927603,
+  longitude: -50.520986
 };
 
 export const environment = {
   production: false,
   topRight: bboxTopRight,
-  bottomLeft: bboxBottomLeft
+  bottomLeft: bboxBottomLeft,
 };
 
 /*

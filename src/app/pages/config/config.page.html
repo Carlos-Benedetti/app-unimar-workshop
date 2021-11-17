@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>config</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="mapDiv" id="configMapDiv">
+  </div>
+  <ion-card *ngIf="haveCoodenates">
+    <ion-button expand="block" (click)="setTopRight()">Definir Canto Superior Direito</ion-button>
+    <ion-button expand="block" (click)="setBottomLeft()">Definir Canto Inferior Esquerdo</ion-button>
+  </ion-card>
+  <ion-card *ngIf="!haveCoodenates" class="ion-text-center">
+    Esperando coordenadas...
+  </ion-card>
+</ion-content>
